@@ -1,3 +1,5 @@
+require("dotenv").config();
+
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
@@ -20,11 +22,13 @@ app.use(cors());
 
 app.use(express.json({ extended: false }));
 
+const dbUrl = process.env.ATLASDB_URL;
+const PORT = process.env.PORT || 3000;
+
 mongoose
-  .connect("mongodb://127.0.0.1:27017/SplitWise")
+  .connect(dbUrl)
   .then(() => console.log("connected to db"))
   .catch(console.error);
-
 
 app.get("/users", async (req, res) => {
   const users = await User.find();
@@ -155,12 +159,7 @@ const AddFriend = async (currUserId, email, res) => {
     await newFriendship.save();
     console.log("newFriendship", newFriendship);
   }
-  // CurrentUser.friends.unshift({ userID: user._id });
-  // await CurrentUser.save();
-  // user.friends.push({ userID: CurrentUser._id });
-  // if (CurrentUser.friends.includes(user._id)) {
-  //   return res.status(409).json({ msg: "Already friends!" });
-  // } else {
+
   CurrentUser.friends.push({ userID: user._id });
   user.friends.push({ userID: CurrentUser._id });
   await CurrentUser.save();
@@ -182,82 +181,12 @@ app.post("/addFriend/:id", async (req, res) => {
     const user = await AddFriend(currUserId, email, res);
     console.log("Added Friend", user);
     res.status(200).json([{ user, frndID: user._id }]);
-    // const user = await User.findOne({ email });
-    // if (!user) {
-    //   return res
-    //     .status(404)
-    //     .json({ msg: "Tell your friend to register bro !!" });
-    // }
-    // const CurrentUser = await User.findById(currUserId);
-    // if (!CurrentUser) {
-    //   return res.status(404).json({ msg: "User not found" });
-    //   //definetly user will exist , i wrote this for just to make sure
-    // }
-    // if (user._id.toString() === currUserId.toString()) {
-    //   return res
-    //     .status(401)
-    //     .json({ msg: "You can't add yourself as a friend!" });
-    // }
-    // for (let friend of CurrentUser.friends) {
-    //   if (friend.userID.toString() === user._id.toString()) {
-    //     return res.status(409).json({ msg: "Already a Friend!" });
-    //   }
-    // }
-    // //// i dont think i need below 4 lines
-    // let mergeId1 = currUserId.toString() + user._id.toString();
-    // let mergeId2 = user._id.toString() + currUserId.toString();
-    // const isExist1 = await Friend.findOne({ mergeId: mergeId1 });
-    // const isExist2 = await Friend.findOne({ mergeId: mergeId2 });
-    // console.log("adding new friend", isExist1, isExist2);
-    // if (!isExist1 && !isExist2) {
-    //   console.log("merging ");
-    //   const newFriendship = new Friend({
-    //     mergeId: mergeId1,
-    //     user1: currUserId,
-    //     user2: user._id,
-    //   });
-    //   await newFriendship.save();
-    //   console.log("newFriendship", newFriendship);
-    // }
-    // // CurrentUser.friends.unshift({ userID: user._id });
-    // // await CurrentUser.save();
-    // // user.friends.push({ userID: CurrentUser._id });
-    // // if (CurrentUser.friends.includes(user._id)) {
-    // //   return res.status(409).json({ msg: "Already friends!" });
-    // // } else {
-    // CurrentUser.friends.push({ userID: user._id });
-    // user.friends.push({ userID: CurrentUser._id });
-    // await CurrentUser.save();
-    // await user.save();
-    // console.log("Added Friend", user);
-    // res.status(200).json([{ user, frndID: user._id }]); // for now user is not required ,
-    // // }
   } catch (err) {
     console.error(err);
   }
 
   // const {userId}=req.query;
 });
-
-// const authenticateToken = (req, res, next) => {
-//   const token = req.headers["Authorization"];
-//   if (!token) {
-//     return res.status(401).json({ msg: "No Token Provided" });
-//   }
-//   jwt.verify(token,'secretKey',(err,user)=>{
-//     if(err){
-//       return res.status(403).send({msg:"Invalid Token "})
-//     }
-//     req.user=user;
-//     next();
-//   })
-// };
-
-// app.get("/api/profile", authenticateToken, (req, res) => {
-//   const user = User.findById(req.user._id);
-//   console.log("authen user", user);
-//   res.json({ user });
-// });
 
 const getMergedFriends = async (userId, FriendId) => {
   // adding transaction to merged frnds
@@ -365,26 +294,7 @@ app.post(
           calculatedOweAmount = owe - amount;
         }
       }
-      // if (owe === 0) {
-      //   calculatedLentedAmount = amount; // if already settled , he is giving entire money to friend
-      //   if (Owner.toString() === userId.toString()) {
-      //     calculatedOweAmount = amount;
-      //     // calculatedLentedAmount = amount;
-      //   } else {
-      //     calculatedOweAmount = -amount;
-      //   }
-      // } else if (owe < 0) {
-      //   // owner is paying  friend
-      //   calculatedOweAmount = amount - Math.abs(owe);
-      //   if (calculatedOweAmount > 0) {
-      //     calculatedLentedAmount = calculatedOweAmount;
-      //   }
-      // } else {
-      //   calculatedOweAmount = owe - amount;
-      //   if (calculatedOweAmount < 0) {
-      //     calculatedLentedAmount = Math.abs(calculatedOweAmount);
-      //   }
-      // }
+
       console.log("owe after update : ", calculatedOweAmount);
       console.log(" --------------- shit ends ------------- ");
 
@@ -408,20 +318,12 @@ app.post(
       newTransaction.lentTo.push({ userID: frnd.userID._id });
     }
     await newTransaction.save();
-    // ----------------------------  use for loop to traverse in lentTo friends and update owe's accordingly-------------------------------------------------
-    //  more than 2 people unte ??
-    // make a for loop below may be ??
 
     for (let friend of Friends) {
       console.log("any error over here ?? ", friend.userID._id);
       const mergedFriends = await getMergedFriends(userId, friend.userID._id);
-      // if (!mergedFriends) {
-      //   return res.status(404).json({
-      //     msg: "Sorry you don't have any relationship with this guy :(",
-      //   });
-      // }
+
       let prevOwe = mergedFriends.owe;
-      // console.log(mergedFriends.user1, prevOwe);
 
       mergedFriends.transactions.push({ transactionId: newTransaction._id });
       if (type === "expense") {
@@ -446,42 +348,13 @@ app.post(
       }
       addTransToBoth(friend.userID._id, newTransaction._id);
     }
-    // console.log("mergedFriends,mergedFriendsmergedFriends", mergedFriends);
-    // adding transaction to current User and frnd
     addTransToBoth(userId, newTransaction);
 
     // -----------------------------------------------------------------------------------------------------------------------------------------------
 
-    // make a for loop below to add  the transactioin for every lented persons
-    // console.log(totalFriends, newTransaction);
     res.status(200).json(newTransaction); // successfully wasted 3 hours by not writing this line , god!
-    // res.status(200).json([{newTransaction,owe:mergedFriends.owe}]); // successfully wasted 3 hours by not writing this line , god!
   }
 );
-
-// const getTransactions = (id, res) => {
-//     try {
-//       Friend.findById(id)
-//         .populate("transactions.transactionId")
-//         .exec()
-//         .then((user) => {
-//           const transactions = user.transactions;
-//           //  return sortDescending(transactions);
-//           // console.log("transactions", transactions);
-//           res.json([
-//             transactions.reverse(),
-//             { owe: user.owe, owner: user.user1, idOfFriends: id },
-//           ]);
-//         })
-//         .catch((err) => {
-//           console.error(err);
-//         });
-//     } catch (err) {
-//       console.error(err);
-//     }
-//   };
-
-//  Getting TRansactions --------------------------
 
 const PopulateTransaction = async (
   owe,
@@ -511,18 +384,6 @@ const getTransactions = async (id, FriendId, res) => {
     // console.log("hi ra sdksld",user.transactions);
 
     PopulateTransaction(user.owe, user.user1, user.transactions, res, FriendId);
-
-    // .then((user) => {
-    //   const transactions = user.transactions;
-    //   // console.log("transactions", transactions);
-    //   res.json([
-    //     transactions.reverse(),
-    //     { owe: user.owe, owner: user.user1, idOfFriends: id },
-    //   ]);
-    // })
-    // .catch((err) => {
-    //   console.error(err);
-    // });
   } catch (err) {
     console.error(err);
   }
@@ -560,12 +421,8 @@ const getAllTransactions = async (id, res) => {
 app.get("/getMergedTrans/:id1/:id2", async (req, res) => {
   let userId = req.params.id1;
   let FriendId = req.params.id2;
-  // console.log("mergedFriend", userId, FriendId);
-  // const mergedFriends = await getMergedFriends(userId, FriendId);
   try {
     const mergedFriends = await getMergedFriends(userId, FriendId);
-    // console.log(mergedFriends);
-    // let id = null;
     if (mergedFriends) {
       getTransactions(mergedFriends._id, FriendId, res);
       // id = mergedFriends._id; // i wrote this , sometimes it is showing cannot read undefined _id
@@ -581,8 +438,6 @@ app.get("/getMergedTrans/:id1/:id2", async (req, res) => {
   } catch (err) {
     console.error(err);
   }
-  // console.log("hammayya", mergedTransactions);
-  // res.json(mergedTransactions);
 });
 
 //get settled trans
@@ -610,12 +465,6 @@ app.get("/all/:id", (req, res) => {
 
   // remember here id means userid,i sent this to avoid error,(no need actually)
   getAllTransactions(id, res);
-  // deleted -------------
-  // PopulateTransaction(user,)
-  // .then((user) => {
-  //   const transactions = user.transactions;
-  //   res.json(transactions.reverse());
-  // })
 });
 // dashboard balances
 app.post("/dashboard/balances/:id", async (req, res) => {
@@ -686,13 +535,7 @@ app.delete("/delete/:id", async (req, res) => {
       // Delete comments associated with this transaction
       await Comment.deleteMany({ _id: { $in: commentIds } });
     }
-    // let u1 = await User.findById(trans.paidBy); // del tran in user1
-    // let u2 = await User.findById(trans.lentTo); //  "   "   "  user2
-    // console.log(
-    //   "before delete ",
-    //   u1.transactions.length,
-    //   u2.transactions.length
-    // );
+
     let transOfMerge = await Friend.updateMany(
       { transactions: { $elemMatch: { transactionId: id } } },
       { $pull: { transactions: { transactionId: id } } }
@@ -722,13 +565,7 @@ app.delete("/delete/:id", async (req, res) => {
       //  more than 2 people unte ??
       // make a for loop below may be ??
       const mergedFriends = await getMergedFriends(trans.paidBy, lented.userID);
-      // let user1 = await User.findById(trans.paidBy); // del tran in user1
-      // let user2 = await User.findById(trans.lentTo); //  "   "   "  user2
-      // console.log(
-      //   "before delete ",
-      //   user1.transactions.length,
-      //   user2.transactions.length
-      // );
+
       const owner = mergedFriends.user1;
       let owe = mergedFriends.owe;
       // owe = parseFloat(owe, 10)
@@ -762,69 +599,6 @@ app.delete("/delete/:id", async (req, res) => {
         settledTransOfMerge.matchedCount
       );
     }
-
-    // let UpdatingOwe = await Friend.findByIdAndUpdate(
-    //   // changed owe :
-    //   mergedFriends._id,
-    //   { owe: owe }
-    // );
-    // // dont console with UpdatingOwe , it is asynchronous, might process  after the next line of code
-    // let updatedMergedFriends = await Friend.findById(mergedFriends._id);
-    // console.log("updatedFriend owe", updatedMergedFriends.owe);
-    // // expense 80,40 and settle 40 , still owe 80 , but if i delete 80 or i deleted 80 somewhere in settled then, all are settled ,  so push every trans into settled
-    // if (updatedMergedFriends.owe === 0) {
-    //   for (let transaction of updatedMergedFriends.transactions) {
-    //     updatedMergedFriends.settledTransactions.push({
-    //       transactionId: transaction.transactionId,
-    //     });
-    //   }
-    //   updatedMergedFriends.transactions = [];
-    //   await updatedMergedFriends.save();
-    // }
-    // if (clicked === "settle" || settledTransOfMerge.matchedCount === 1) {
-    //   // i put the second condition for (what if user is not clicking settled transactions directly , instead he is clicking settled transactions from all expenses :)
-    //   // this is where u need to add some of settled transactions back to expenses of merged Users
-    //   if (updatedMergedFriends.owe !== 0) {
-    //     let addToExpense = [];
-    //     let upDatedSettle = [];
-    //     let checkOwe = 0;
-    //     let allSettle = updatedMergedFriends.settledTransactions.reverse();
-    //     let crossed = false;
-
-    //     for (let i = 0; i < allSettle.length; i++) {
-    //       let settle = allSettle[i];
-    //       // console.log(settle);
-    //       const trans = await Transaction.findById(settle.transactionId);
-    //       let amount = trans.lentedAmount;
-    //       // console.log(amount);
-    //       if (trans.type === "settle") {
-    //         amount = trans.amount_paid;
-    //       }
-    //       if (
-    //         updatedMergedFriends.user1.toString() === trans.paidBy.toString()
-    //       ) {
-    //         checkOwe += amount;
-    //       } else {
-    //         checkOwe -= amount;
-    //       }
-    //       if (crossed == false) {
-    //         addToExpense.push(settle);
-    //       } else upDatedSettle.push(settle);
-    //       if (checkOwe === owe) {
-    //         crossed = true;
-    //       }
-    //     }
-    //     upDatedSettle.reverse();
-    //     let ToUpdateTrans = await Friend.findById(mergedFriends._id);
-    //     ToUpdateTrans.settledTransactions = [];
-    //     ToUpdateTrans.settledTransactions = upDatedSettle;
-    //     // let updateExpenses = ToUpdateTrans.transactions.reverse();
-    //     for (let tran of addToExpense) {
-    //       ToUpdateTrans.transactions.unshift(tran);
-    //     }
-    //     await ToUpdateTrans.save();
-    //   }
-    // }
 
     res.json(trans);
   } catch (err) {
@@ -1082,27 +856,6 @@ app.put(
           );
         }
       }
-      // populating user in notes
-
-      // res.status(200).json({ notes:updateTrans.notes, changedBy: changedBy.username });
-
-      // let updatedSettle = await Settlement.updateOne(
-      //   { transactionId: id },
-      //   { $set: { lentedAmount: newLentedAmount } }
-      // )
-
-      // let changedLent = changedAmount / 2;
-      // if (trans.type === "settle") {
-      //   changedLent = changedAmount; // no need to half , give full
-      // }
-
-      // let upDatedLentedAmount = trans.lentedAmount;
-      // let calcLent = (amount - trans.amount_paid) / 2 ;
-      // if(trans.type === "settle"){
-      // calcLent = trans.amount_paid;
-      // }
-
-      // save new transaction first
     } catch (err) {
       console.error(err);
     }
@@ -1238,8 +991,8 @@ const transporter = nodemailer.createTransport({
   port: 587, // Standard port for TLS/SSL
   // secure: true, // Enable TLS/SSL encryption
   auth: {
-    user: "mukheshkumaryedla2004@gmail.com", // Replace with environment variable
-    pass: "fofs uydj bykl mddi",
+    user: process.env.EMAIL_USER, // Replace with environment variable
+    pass: process.env.EMAIL_PASS,
     // Replace with environment variable
   },
 });
@@ -1360,6 +1113,6 @@ function isValidEmail(email) {
   return re.test(String(email).toLowerCase());
 }
 
-app.listen(3001, () => {
+app.listen(PORT, () => {
   console.log("Server started");
 });
