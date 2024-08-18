@@ -55,7 +55,7 @@ const Register = () => {
 
   // Submit the form to register
   const handleRegister = async () => {
-    if (Cookies.get("user") !== undefined) {
+    if (Cookies.get("user") !== undefined) { // already logged in MKY
       alert("You are already logged in.");
       window.location.href = "/dashboard";
     }

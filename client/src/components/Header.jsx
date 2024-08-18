@@ -17,7 +17,7 @@ const Header = () => {
               Logout
             </button>
             {/* <Link to={"/all"}>
-              <div className="bg-slate-400 w-[100px] p-1 m-1" >All Expenses</div>
+              <div className="bg-slate-400 w-[100px] p-1 m-1" >All Expenses</div> // show expenses related to user: mukhesh
             </Link> */}
             {/* <Link to={"/dashboard"}>
               <div className="bg-slate-400 w-[100px] p-1 m-1" >Dashboard</div>

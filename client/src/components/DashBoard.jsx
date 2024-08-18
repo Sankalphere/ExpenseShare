@@ -68,7 +68,7 @@ const DashBoard = () => {
   };
   const fetchProfile = async () => {
     if (user) {
-      // console.log("user from fectchProfile", user);
+      // console.log("user from fectchProfile", user ); // eg : mukheshkumar  
       getUser(user);
     } else {
       setUserDetails(null);

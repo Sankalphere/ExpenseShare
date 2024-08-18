@@ -5,7 +5,7 @@ import { URL } from "../utils/constants";
 // import {useHistory}
 
 const InvitationForm = () => {
-  const [friendEmail, setFriendEmail] = useState("");
+  const [friendEmail, setFriendEmail] = useState("");  // stores friends mail eg : mukheshkumaryedla2004@gmail.com
   const [errorMessage, setErrorMessage] = useState(null);
   const { user } = useContext(UserContext);
   //   const history = useHistory();
@@ -50,4 +50,4 @@ const InvitationForm = () => {
 };
 
 export default InvitationForm;
-// Registration component (handle pre-filled email if received from invitation link)
+// Registration component (handle pre-filled email if received from invitation link : mukheshkumaryedla2004@gmail.com)

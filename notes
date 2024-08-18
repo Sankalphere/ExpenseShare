@@ -1,4 +1,4 @@
-------------> Started on 17-03-2024 <------------------
+------------> Started on 17-03-2024 - by  Mukhesh Kumar Yedla <------------------
 -------------------------> if user changes , redirect him to login page , this component is fixed for every route or component <--------------------
 // points to be noted : 
 // add expenses : maximum amount should be fixed , otherwise user may enter 100000000000000000000000000000000000000000000 and also while entering amount if he enters 0.01 , after splitting it into half , it is like 0.000300000000000005 
@@ -11,6 +11,8 @@
 
 owner pays amount , and he wants to delete it , then owe - lented
 friend paid amount he wants to delete it,then lented + paid
+
+MKY - Mukheshkumaryedla , take an example of the user who invites people to join in the app
 
 
 
