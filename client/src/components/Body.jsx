@@ -5,7 +5,7 @@ import { useContext } from "react";
 import Login from "./Login";
 import AddFriend from "./AddFriend";
 import AddTransaction from "./AddTransaction";
-import { URL } from "../utils/constants";
+// import { URL } from "../utils/constants";
 import AllExpenses from "./AllExpenses";
 import { Link } from "react-router-dom";
 

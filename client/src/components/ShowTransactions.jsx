@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 // import { URL } from "../utils/constants";
-import { useContext } from "react";
+// import { useContext } from "react";
 import GetPaidUser from "../utils/GetPaidUser";
 import GetLentedUser from "../utils/GetLentedUser";
+import { UserContext } from "../utils/userContext";
 import { UserContext } from "../utils/userContext";
 // import Cookies from "js-cookie";
 import Comments from "./Comments";
