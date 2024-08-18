@@ -5,7 +5,7 @@ import { useContext } from "react";
 import Login from "./Login";
 import AddFriend from "./AddFriend";
 import AddTransaction from "./AddTransaction";
-// import { URL } from "../utils/constants";
+import { URL } from "../utils/constants";
 import AllExpenses from "./AllExpenses";
 import { Link } from "react-router-dom";
 
@@ -42,90 +42,44 @@ const Body = () => {
 
   return (
     <div>
+      <button className="btn bg-black text-white px-4 py-2">Hello</button>
       <div>
-        <button className="btn bg-black text-white px-4 py-2">Hello</button>
-        <div>
-          {userDetails ? (
-            <div>
-              <p>Welcome back {userDetails.username}</p>
-              <button
-                className="bg-orange-600 px-4 py-1 text-md text-white m-2"
-                onClick={() => logout()}
-              >
-                Logout
-              </button>
-              <Link to={"/all"}>
-                <div className="bg-slate-400 w-[100px] p-1 m-1">
-                  All Expenses
-                </div>
-              </Link>
-              <Link to={"/dashboard"}>
-                <div className="bg-slate-400 w-[100px] p-1 m-1">Dashboard</div>
-              </Link>
-              {/* <AllExpenses/> */}
-              <AddFriend />
-              {/* <AddTransaction friendId={null} /> */}
-            </div>
-          ) : (
-            // <Login/>
-            // <p>Logged in as guest</p>
-            <Login />
+        {userDetails ? (
+          <div>
+            <p>Welcome back {userDetails.username}</p>
+            <button
+              className="bg-orange-600 px-4 py-1 text-md text-white m-2"
+              onClick={() => logout()}
+            >
+              Logout
+            </button>
+            <Link to={"/all"}>
+              <div className="bg-slate-400 w-[100px] p-1 m-1">All Expenses</div>
+            </Link>
+            <Link to={"/dashboard"}>
+              <div className="bg-slate-400 w-[100px] p-1 m-1">Dashboard</div>
+            </Link>
+            {/* <AllExpenses/> */}
+            <AddFriend />
+            {/* <AddTransaction friendId={null} /> */}
+          </div>
+        ) : (
+          // <Login/>
+          // <p>Logged in as guest</p>
+          <Login />
 
-            // <button
-            //   onClick={() =>
-            //     login({
-            //       _id: "65f98c61498e837c73c99c1b",
-            //     })
-            //   }
-            // >
-            //   Login
-            // </button>
-          )}
-        </div>
-        {/* <Login /> */}
+          // <button
+          //   onClick={() =>
+          //     login({
+          //       _id: "65f98c61498e837c73c99c1b",
+          //     })
+          //   }
+          // >
+          //   Login
+          // </button>
+        )}
       </div>
-      <div>
-        <button className="btn bg-black text-white px-4 py-2">Hello</button>
-        <div>
-          {userDetails ? (
-            <div>
-              <p>Welcome back {userDetails.username}</p>
-              <button
-                className="bg-orange-600 px-4 py-1 text-md text-white m-2"
-                onClick={() => logout()}
-              >
-                Logout
-              </button>
-              <Link to={"/all"}>
-                <div className="bg-slate-400 w-[100px] p-1 m-1">
-                  All Expenses
-                </div>
-              </Link>
-              <Link to={"/dashboard"}>
-                <div className="bg-slate-400 w-[100px] p-1 m-1">Dashboard</div>
-              </Link>
-              {/* <AllExpenses/> */}
-              <AddFriend />
-              {/* <AddTransaction friendId={null} /> */}
-            </div>
-          ) : (
-            // <Login/>
-            // <p>Logged in as guest</p>
-            <Login />
-
-            // <button
-            //   onClick={() =>
-            //     login({
-            //       _id: "65f98c61498e837c73c99c1b",  //  mukhesh :) 
-            //     })
-            //   }
-            // >
-            //   Login
-            // </button>
-          )}
-        </div>
-        {/* <Login /> */}
-      </div>
+      {/* <Login /> */}
     </div>
   );
 };
