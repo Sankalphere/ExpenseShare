@@ -63,11 +63,11 @@ const AppLayout = () => {
 
 const AppRoutes = createBrowserRouter([
   {
-    path: "/",
+    path: "/h",
     element: <AppLayout />,
     children: [
       {
-        path: "/",
+        path: "/home",
         element: <DashBoard />,
       },
       {
