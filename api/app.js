@@ -1046,7 +1046,7 @@ app.post("/api/invitations", async (req, res) => {
     await invitation.save();
 
     // Generate invitation link (replace 'your_frontend_url' with your actual URL)
-    const invitationLink = `http://localhost:3000/register?invitation=${token}`;
+    const invitationLink = `https://66c17dc0832d5718caf48afb--celadon-chaja-d97f16.netlify.app/register?invitation=${token}`;
 
     // Send email invitation
     console.log("invitation will be expired in ", invitation.expiresAt);
