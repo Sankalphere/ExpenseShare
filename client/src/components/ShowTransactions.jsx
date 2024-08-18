@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
-import { URL } from "../utils/constants";
+// import { URL } from "../utils/constants";
 import { useContext } from "react";
 import GetPaidUser from "../utils/GetPaidUser";
 import GetLentedUser from "../utils/GetLentedUser";
 import { UserContext } from "../utils/userContext";
-import Cookies from "js-cookie";
+// import Cookies from "js-cookie";
 import Comments from "./Comments";
 import { useParams } from "react-router-dom";
 import TotalNotes from "./Notes";
@@ -409,45 +409,89 @@ const ShowTransactions = (props) => {
                     Save
                   </button>
                 </form>
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    const formData = new FormData(e.target);
+                    const Transaction = {
+                      description: formData.get("description"),
+                      amount: formData.get("amount"),
+                    };
+                    UpdateTransaction(Transaction);
+                  }}
+                >
+                  <input
+                    className="p-2 m-1"
+                    type="text"
+                    name="description"
+                    onChange={(e) => SetDescription(e.target.value)}
+                    value={Description}
+                  />
+                  <input
+                    className="p-2 m-1"
+                    type="number"
+                    name="amount"
+                    onChange={(e) => SetAmount(parseFloat(e.target.value))}
+                    value={Amount}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setPopUpActive(false)}
+                    className="bg-stone-800 px-4 py-2 m-2 text-white"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="bg-green-500 text-white px-4 py-2 m-2"
+                  >
+                    Save
+                  </button>
+                </form>
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    const formData = new FormData(e.target);
+                    const Transaction = {
+                      description: formData.get("description"),
+                      amount: formData.get("amount"),
+                    };
+                    UpdateTransaction(Transaction);
+                  }}
+                >
+                  <input
+                    className="p-2 m-1"
+                    type="text"
+                    name="description"
+                    onChange={(e) => SetDescription(e.target.value)}
+                    value={Description}
+                  />
+                  <input
+                    className="p-2 m-1"
+                    type="number"
+                    name="amount"
+                    onChange={(e) => SetAmount(parseFloat(e.target.value))}
+                    value={Amount}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setPopUpActive(false)}
+                    className="bg-stone-800 px-4 py-2 m-2 text-white"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="bg-green-500 text-white px-4 py-2 m-2"
+                  >
+                    Save
+                  </button>
+                </form>
               </div>
             ) : (
               ""
             )}
-            {/* <div className="flex">
-              <div className="flex-1">d</div>
-              <div className="flex-1">
-                <div className="text-xs">Notes and Comments</div>
-                {Notes.map((notes) => (
-                  <div className="text-xs " key={notes._id}>
-                    <div className="border text-xs p-1 m-1 rounded-lg  border-gray-300 ">
-                      SplitWise{" "}
-                      <span className="text-gray-500">
-                        {getMonth(notes.date)} {getDate(notes.date)}
-                      </span>
-                      <div>
-                        {notes.updatedBy.username} updated this transaction
-                      </div>
-                      {notes.amount.original === notes.amount.updated ? null : (
-                        <div>
-                          - Cost changed from ₹{notes.amount.original} to ₹
-                          {notes.amount.updated}
-                        </div>
-                      )}
-                      {notes.description.original ===
-                      notes.description.updated ? null : (
-                        <div>
-                          - Cost changed from {notes.description.original} to{" "}
-                          {notes.description.updated}
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                ))}
-                <div>
-                  <Comments transactionId={transactions._id} />
-                </div>
-              </div>
-            </div> */}
+
             <div className="flex">
               <div className="flex-1">
                 <Shares
